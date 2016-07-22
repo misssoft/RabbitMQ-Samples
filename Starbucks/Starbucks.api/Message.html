@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Product App</title>
+</head>
+<body>
+
+    <div>
+        <h2>Messages</h2>
+        <ul id="messages" />
+    </div>
+    <div>
+        <h2>Search by Guid</h2>
+        <input type="text" id="messageId" size="5" />
+        <input type="button" value="Search" onclick="find();" />
+        <p id="message" />
+    </div>
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script>
+    var uri = 'http://localhost:55115/api/newordermessages';
+
+    $(document).ready(function () {
+      // Send an AJAX request
+      $.getJSON(uri)
+          .done(function (data) {
+            // On success, 'data' contains a list of products.
+            $.each(data, function (key, item) {
+              // Add a list item for the product.
+              $('<li>', { text: formatItem(item) }).appendTo($('#messages'));
+            });
+          });
+    });
+
+    function formatItem(item) {
+      return item.Name + ': $' + item.Price;
+    }
+
+    function find() {
+        var id = $('#messageId').val();
+      $.getJSON(uri + '/' + id)
+          .done(function (data) {
+              $('#message').text(formatItem(data));
+          })
+          .fail(function (jqXHR, textStatus, err) {
+              $('#message').text('Error: ' + err);
+          });
+    }
+    </script>
+</body>
+</html>

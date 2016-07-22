@@ -25,7 +25,7 @@ namespace Starbucks.Cashier
             Define(() =>
             {
                 Initially(
-                    When(NewOrder)
+                    When(OrderMade)
                         .Then((saga, message) => saga.ProcessNewOrder(message))
                         .TransitionTo(WaitingForPayment)
                     );
@@ -47,7 +47,7 @@ namespace Starbucks.Cashier
         public static State Completed { get; set; }
         public static State WaitingForPayment { get; set; }
 
-        public static Event<NewOrderMessage> NewOrder { get; set; }
+        public static Event<NewOrderMessage> OrderMade { get; set; }
         public static Event<SubmitPaymentMessage> PaymentSubmitted { get; set; }
 
         public Guid CorrelationId { get; set; }

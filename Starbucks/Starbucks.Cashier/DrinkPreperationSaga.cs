@@ -16,13 +16,13 @@ namespace Starbucks.Barista
             Define(() =>
             {
                 Initially(
-                    When(NewOrder)
-                        .Then((saga, message) => saga.ProcessNewOrder(message))
+                    When(OrderReceived)
+                        .Then((saga, message) => saga.PrepareForNewOrder(message))
                         .TransitionTo(WaitingForPayment)
                     );
 
                 During(WaitingForPayment,
-                       When(PaymentComplete)
+                       When(PaymentReceived)
                         .Then((saga, message) =>
                         {
                             Console.WriteLine("Payment Complete for '{0}' got it!", saga.Name);
@@ -48,15 +48,15 @@ namespace Starbucks.Barista
         public static State WaitingForPayment { get; set; }
 
 
-        public static Event<NewOrderMessage> NewOrder { get; set; }
-        public static Event<PaymentCompleteMessage> PaymentComplete { get; set; }
+        public static Event<NewOrderMessage> OrderReceived { get; set; }
+        public static Event<PaymentCompleteMessage> PaymentReceived { get; set; }
 
         public Guid CorrelationId { get; private set; }
 
         public IServiceBus Bus { get; set; }
 
 
-        public void ProcessNewOrder(NewOrderMessage message)
+        public void PrepareForNewOrder(NewOrderMessage message)
         {
             Name = message.Name;
             Drink = string.Format("{0} {1}", message.Size, message.Item);
